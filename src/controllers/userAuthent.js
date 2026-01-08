@@ -1,7 +1,8 @@
-const validate = require('..utils/validate.js');
+const validate = require('../utils/validate.js');
 const User = require('../Models/user');
 const bcrypt=require("bcrypt"); 
-const jwt=require("jsonwebtoken")
+const jwt=require("jsonwebtoken");
+const { redisClient } = require('../config/redis.js');
 
 const register= async (req,res)=>{
     try{
@@ -14,7 +15,6 @@ const register= async (req,res)=>{
         
          // adding to database 
          const user= await User.create(req.body);
-
          //  JWT(json web Token)
          const token= jwt.sign({_id:user._id,email:emailId},process.env.JWT_KEY, {expiresIn:"1h"})
          res.cookie('token',token,{maxAge:60*60*1000});
@@ -33,6 +33,7 @@ const login= async (req,res)=>{
         
         // finding user
         const user = await User.findOne({emailId})
+        if (!user) throw new Error("User not found");
 
         // Checking if password is correct or not
         const isCorrect= await bcrypt.compare(password,user.password);
@@ -44,10 +45,25 @@ const login= async (req,res)=>{
          res.status(200).send("User Logged in successfully");
         
     }catch(err){
-        req.status(401).send("Error :  "+err)
+        res.status(401).send("Error :  "+err)
     }
 }
 
 const logout = async (req,res)=>{
-    
+  
+    try
+    {
+        const {token}=req.cookies;
+        const payload=jwt.decode(token);
+        // set the value 
+        await redisClient.set(`token:${token}`,"blocked");
+        await redisClient.expireAt(`token:${token}`,payload.exp);
+        // clear the token
+        res.clearCookie("token");
+        res.status(200).send("Logout Successfully");
+    }catch(err){
+        res.status(401).send("Error + "+err)
+    }
 }
+
+module.exports={register,login,logout};
