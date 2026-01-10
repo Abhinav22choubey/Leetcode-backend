@@ -22,7 +22,7 @@ const userMiddleware = async (req, res,next)=>{
         req.user=user;
         next();
     } catch(err){
-        console.log("Error : " +err.message);
+        res.send("Error : " +err.message);
     }
     
 }

@@ -22,9 +22,6 @@ const userSchema= new Schema({
         match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
         immutable:true
     },
-    role: {
-        type: String,
-    },
     age :{
         type:Number,
         min:5,
