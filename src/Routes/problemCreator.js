@@ -1,16 +1,17 @@
 const express= require("express");
+const adminMiddleware=require('../middleware/adminMiddleware')
 
 const problemRouter=express.Router();
 
 // Problem Create
-problemRouter.post("/create",problemCreate);
-// view
-problemRouter.get("/:id",problemFetch);
-// all view
-problemRouter.get("/",problemFetchAll);
+problemRouter.post("/create",adminMiddleware,createProblem);
 // update
-problemRouter.patch("/:id",problemUpdate);
+problemRouter.patch("/:id",adminMiddleware,updateProblem);
 // delte
-problemRouter.delete("/:id",problemDelete);
+problemRouter.delete("/:id",adminMiddleware,deleteProblem);
+// view
+problemRouter.get("/:id",getProblemById);
+// all view
+problemRouter.get("/",getAllProblem);
 // solved problem
-problemRouter.get("/user",solvedProblem);
+problemRouter.get("/user",solvedAllProblemByUser);

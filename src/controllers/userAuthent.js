@@ -70,8 +70,6 @@ const logout = async (req, res) => {
 };
 const adminRegister = async (req,res) => {
      try {
-    // validating
-    if(req.user.role!="admin") throw new Error ("You don't have the right")
     validate(req.body);
     const { firstName, emailId, password } = req.body;
 
