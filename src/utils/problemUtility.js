@@ -12,20 +12,45 @@ const getLanguageById = (lang) => {
 const submitBatch = async (submissions) => {
   const options = {
     method: "POST",
-    url: "https://judge0-extra-ce1.p.rapidapi.com/submissions/batch",
+    url: "https://judge0-ce.p.rapidapi.com/submissions/batch",
     params: {
-      base64_encoded: "true",
+      base64_encoded: "false",
     },
     headers: {
-      "x-rapidapi-key": "912a0b38c6msh69c220d010664c7p1a38ccjsn6295a9d96cb3",
-      "x-rapidapi-host": "judge0-extra-ce1.p.rapidapi.com",
+      "x-rapidapi-key": "ab99c6ec42mshfd636ec7c6687efp1b9043jsna684835b0591",
+      "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
       "Content-Type": "application/json",
     },
     data: {
-      submissions
+      submissions,
     },
   };
 
+  async function fetchData() {
+    try {
+      const response = await axios.request(options);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  return await fetchData();
+};
+const submitToken = async (resultToken) => {
+  const options = {
+    method: "GET",
+    url: "https://judge0-ce.p.rapidapi.com/submissions/batch",
+    params: {
+      tokens: resultToken.join(","),
+      base64_encoded: "false",
+      fields: "*",
+    },
+    headers: {
+      "x-rapidapi-key": "ab99c6ec42mshfd636ec7c6687efp1b9043jsna684835b0591",
+      "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
+    },
+  };
   async function fetchData() {
     try {
       const response = await axios.request(options);
@@ -35,10 +60,22 @@ const submitBatch = async (submissions) => {
       console.error(error);
     }
   }
-
-  return await fetchData();
+  const waiting = async (timer) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, timer);
+    });
+  };
+  let i = 10;
+  while (i > 0) {
+    const result = await fetchData();
+    const IsresultObtained = result.submissions.every((r) => r.status_id > 2);
+    if (IsresultObtained) return result.submissions;
+    await waiting(2000);
+    i--;
+  }
 };
 
-module.exports = { getLanguageById, submitBatch };
+module.exports = { getLanguageById, submitBatch, submitToken };
 
 // api
+// resultToken.join(",")
