@@ -120,5 +120,26 @@ const deleteProblem=async(req,res)=>{
     res.status(500).send("Error"+err.message);
   }
 } 
+const getProblemById=async(req,res)=>{
+  const {id}=req.params;
+  try{
+    // remember to remove the hidden test case and refernce solution for later don't forget you hidden test case and refernce solutions are visible 
+    const searchedProblem=await Problem.findById(id);
+    if(!searchedProblem) return res.status(404).send("Problem Not found ");
+    res.status(200).send(searchedProblem);
+  }catch(err){
+    res.status(500).send("Error"+err.message);
+  }
+}
+const getAllProblem=async (req,res)=>{
+  try{
+    // pagination can be added later
+    const allProblem=await Problem.find({});
+    if(allProblem.length==0) return res.status(404).send("No Problem found");
+    res.status(200).send(allProblem);
+  }catch(err){
+    res.status(500).send("Error"+err.message)
+  }
+}
 
-module.exports = { createProblem, updateProblem,deleteProblem };
+module.exports = { createProblem, updateProblem,deleteProblem ,getProblemById,getAllProblem};
