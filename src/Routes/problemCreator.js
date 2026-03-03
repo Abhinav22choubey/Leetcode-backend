@@ -14,7 +14,7 @@ problemRouter.delete("/delete/:id",adminMiddleware,deleteProblem);
 problemRouter.get("/problemById/:id",userMiddleware,getProblemById);
 // all view
 problemRouter.get("/getAllProblem",userMiddleware,getAllProblem);
-// solved problem
-problemRouter.get("/problemSolvedByUser",userMiddleware,solvedAllProblemByUser);
+// // solved problem
+// problemRouter.get("/problemSolvedByUser",userMiddleware,solvedAllProblemByUser);
 
 module.exports=problemRouter;

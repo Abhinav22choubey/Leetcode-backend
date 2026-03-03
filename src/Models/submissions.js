@@ -23,7 +23,7 @@ const submissionSchema= new Schema({
     },
     status:{
         type:String,
-        enum:['pending','accepted','wrong','error'],
+        enum:['pending','Accepted','wrong','error'],
         default:'pending'
     },
     runtime:{
@@ -42,6 +42,10 @@ const submissionSchema= new Schema({
         type:Number,
         default:0,
     },
+    testCasesTotal:{
+        type:Number,
+        default:0
+    },
 },{timestamps:true});
-const Submission=mongoose.model("Submission",submissionSchema);
+const Submission=mongoose.model("submission",submissionSchema);
 module.exports=Submission;
