@@ -1,5 +1,6 @@
 const Problem = require("../Models/problem");
 const Submission = require("../Models/submissions");
+const User = require("../Models/user");
 const {
   getLanguageById,
   submitBatch,
@@ -10,13 +11,14 @@ const submitCode = async (req, res) => {
     const userId = req.user._id;
     const problemId = req.params.id;
     const { code, language } = req.body;
-    console.log(userId,problemId,code,language)
+    // console.log(userId, problemId, code, language);
     if (!userId || !problemId || !code || !language)
       return res.status(400).send("Some Fields are missing");
     // Fetch the problem from database
     const problem = await Problem.findById(problemId);
+    if (!problem) res.status(400).send("Problem not Found");
     // test case hidden
-  
+
     // pehle submission store kar do
     const submittedResult = await Submission.create({
       userId,
@@ -40,42 +42,79 @@ const submitCode = async (req, res) => {
     const submitResult = await submitBatch(submissions);
     const resultToken = submitResult.map((value) => value.token);
     const testResult = await submitToken(resultToken);
-    let testCasePassed=0;
-    let runtime=0;
-    let memory=0;
-    let status="Accepted";
-    let errorMessage=null;
+    let testCasePassed = 0;
+    let runtime = 0;
+    let memory = 0;
+    let status = "Accepted";
+    let errorMessage = null;
     for (const test of testResult) {
       if (test.status_id == 3) {
         testCasePassed++;
-        runtime=runtime+parseFloat(test.time);
-        memory=Math.max(memory,test.memory);
-      }
-      else {
-        if(test.status_id==4){
-            status='error',
-            errorMessage=test.stderr;
-        }
-        else {
-          status='wrong',
-          errorMessage=test.stderr;
+        runtime += parseFloat(test.time || 0);
+        memory = Math.max(memory, test.memory || 0);
+      } else {
+        if (test.status_id == 6) {
+          status = "Compilation Error";
+          errorMessage = test.compile_output;
+        } else if (test.status_id == 5) {
+          status = "Time Limit Exceeded";
+        } else if (test.status_id == 4) {
+          status = "Wrong Answer";
+        } else {
+          status = "Runtime Error";
+          errorMessage = test.stderr;
         }
       }
     }
     // store the result in database in submission
-    submittedResult.status=status;
-    submittedResult.runtime=runtime;
-    submittedResult.memory=memory;
-    submittedResult.errorMessage=errorMessage;
-    submittedResult.testCasePassed=testCasePassed;
+    submittedResult.status = status;
+    submittedResult.runtime = runtime;
+    submittedResult.memory = memory;
+    submittedResult.errorMessage = errorMessage;
+    submittedResult.testCasePassed = testCasePassed;
 
     await submittedResult.save();
+    console.log(submittedResult);
+
+    // Problem id ko add karenge user schema me
+    if (status == "Accepted" && !req.user.problemSolved.includes(problemId)) {
+      req.user.problemSolved.push(problemId);
+      await req.user.save();
+    }
+
     res.status(201).send(submittedResult);
   } catch (err) {
-    res.status(500).send("Internal Sever Error"+err.message);
+    res.status(500).send("Internal Sever Error" + err.message);
   }
 };
-module.exports = submitCode;
+
+const runCode = async (req, res) => {
+  try {
+    const problemId = req.params.id;
+    const { code, language } = req.body;
+    if (!problemId || !code || !language)
+      return res.status(400).send("Some Fields are missing");
+
+    const problem = await Problem.findById(problemId);
+    if (!problem) res.status(400).send("Problem not Found");
+
+    const languageId = getLanguageById(language);
+
+    const submissions = problem.visibleTestCases.map((testcase) => ({
+      source_code: code,
+      language_id: languageId,
+      stdin: testcase.input,
+      expected_output: testcase.output,
+    }));
+    const submitResult = await submitBatch(submissions);
+    const resultToken = submitResult.map((value) => value.token);
+    const testResult = await submitToken(resultToken);
+    res.status(200).send(testResult);
+  } catch (err) {
+    res.status(500).send(" Error " + err.message);
+  }
+};
+module.exports = { submitCode, runCode };
 //  language_id: 91,
 //     stdin: '10 20',
 //     expected_output: '20',
