@@ -16,8 +16,7 @@ const validate=(data)=>{
             throw new Error("Choose a Strong password");
         }
     }
-    catch{
-
+    catch{ 
     }
 }
 

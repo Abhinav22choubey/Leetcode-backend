@@ -28,6 +28,7 @@ const register = async (req, res) => {
       firstName: firstName,
       emailId: emailId,
     };
+    console.log(result);
     res.cookie("token", token, { maxAge: 60 * 60 * 1000 });
     res.status(201).json({
       data: result,

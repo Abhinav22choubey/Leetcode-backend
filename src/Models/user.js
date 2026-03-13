@@ -33,15 +33,12 @@ const userSchema = new Schema(
       enum: ["user", "admin"],
       default: "user",
     },
-    problemSolved: {
-      type: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: "Problem",
-        },
-      ],
-      unique:true
-    },
+    problemSolved: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Problem",
+      },
+    ],
     password: {
       type: String,
       required: true,
@@ -53,10 +50,10 @@ const userSchema = new Schema(
   },
 );
 // find by id and delete internal impletation is like findOneAndDelete
-userSchema.post("findOneAndDelete",async function(doc){
-  if(doc){
-    await mongoose.model('submission').deleteMany({userId:doc._id});
+userSchema.post("findOneAndDelete", async function (doc) {
+  if (doc) {
+    await mongoose.model("submission").deleteMany({ userId: doc._id });
   }
-})
+});
 const User = mongoose.model("user", userSchema);
 module.exports = User;
