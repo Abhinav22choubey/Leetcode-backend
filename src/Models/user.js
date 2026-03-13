@@ -52,6 +52,11 @@ const userSchema = new Schema(
     timestamps: true,
   },
 );
-
+// find by id and delete internal impletation is like findOneAndDelete
+userSchema.post("findOneAndDelete",async function(doc){
+  if(doc){
+    await mongoose.model('submission').deleteMany({userId:doc._id});
+  }
+})
 const User = mongoose.model("user", userSchema);
 module.exports = User;

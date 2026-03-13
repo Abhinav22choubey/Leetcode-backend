@@ -6,6 +6,7 @@ const {
 const axios = require("axios");
 const Problem = require("../Models/problem");
 const User = require("../Models/user");
+const Submission=require("../Models/submissions");
 
 const createProblem = async (req, res) => {
   const {
@@ -164,7 +165,15 @@ const solvedAllProblemByUser=async(req,res)=>{
     res.status(500).send("Error"+err.message);
   }
 }
-
+const submittedProblem=async(req,res)=>{
+  try{
+      const problemId=req.params.pid;
+      const userId=req.user._id;
+      const allSubmission = await Submission.find({userId,problemId});
+      console.log(allSubmission);
+      res.status(200).send(allSubmission);
+  }catch(err){res.status(500).send("Error "+err.message)};
+}
 module.exports = {
   createProblem,
   updateProblem,
@@ -172,4 +181,5 @@ module.exports = {
   getProblemById,
   getAllProblem,
   solvedAllProblemByUser,
+  submittedProblem
 };
