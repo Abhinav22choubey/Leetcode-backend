@@ -125,12 +125,12 @@ const deleteProfile = async (req, res) => {
   }
 };
 const getAuth = (req, res) => {
-  const {_id,firstName,emailId}= req.user;
+  const {_id,firstName,emailId,role}= req.user;
   const result = {
     userId: _id,
     firstName: firstName,
     emailId: emailId,
-    role:user.role
+    role:role
   };
   res.status(200).json({
     data:result,
