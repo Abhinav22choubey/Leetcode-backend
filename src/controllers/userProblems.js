@@ -146,7 +146,8 @@ const getAllProblem = async (req, res) => {
       "_id title difficultyLevel tags",
     );
     if (allProblem.length == 0) return res.status(404).send("No Problem found");
-    res.status(200).send(allProblem);
+    console.log(allProblem);
+    res.status(200).json(allProblem);
   } catch (err) {
     res.status(500).send("Error" + err.message);
   }

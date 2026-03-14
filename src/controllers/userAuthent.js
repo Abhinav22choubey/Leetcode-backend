@@ -27,6 +27,7 @@ const register = async (req, res) => {
       userId: user._id,
       firstName: firstName,
       emailId: emailId,
+      role:user.role
     };
     console.log(result);
     res.cookie("token", token, { maxAge: 60 * 60 * 1000 });
@@ -62,7 +63,9 @@ const login = async (req, res) => {
       userId: user._id,
       firstName: user.firstName,
       emailId: emailId,
+      role:user.role
     };
+    // console.log(result);
     res.cookie("token", token, { maxAge: 60 * 60 * 1000 });
     res.status(200).json({
       data: result,
@@ -81,10 +84,11 @@ const logout = async (req, res) => {
     await redisClient.set(`token:${token}`, "blocked");
     await redisClient.expireAt(`token:${token}`, payload.exp);
     // clear the token
+    console.log("userLogout succeessfully");
     res.clearCookie("token");
     res.status(200).send("Logout Successfully");
   } catch (err) {
-    res.status(401).send("Error + " + err);
+    res.status(401).send("Error : " + err);
   }
 };
 const adminRegister = async (req, res) => {
@@ -126,6 +130,7 @@ const getAuth = (req, res) => {
     userId: _id,
     firstName: firstName,
     emailId: emailId,
+    role:user.role
   };
   res.status(200).json({
     data:result,
