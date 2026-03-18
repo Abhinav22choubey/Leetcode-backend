@@ -1,7 +1,7 @@
 const express= require("express");
 
 const authRouter=express.Router();
-const {register,login,logout,adminRegister,deleteProfile,getAuth} =require('../controllers/userAuthent');
+const {register,login,logout,adminRegister,deleteProfile,getAuth,getProfile} =require('../controllers/userAuthent');
 const userMiddleware = require("../middleware/userMiddleware");
 const adminMiddleware=require("../middleware/adminMiddleware");
 // Register
@@ -11,6 +11,6 @@ authRouter.post('/logout',userMiddleware,logout)
 authRouter.post('/admin/register',adminMiddleware,adminRegister)
 authRouter.delete('/deleteProfile',userMiddleware,deleteProfile)
 authRouter.get('/getAuth',userMiddleware,getAuth)
-// authRouter.get('/getProfile',getProfile)
+authRouter.get('/getProfile',userMiddleware,getProfile)
  
 module.exports=authRouter;

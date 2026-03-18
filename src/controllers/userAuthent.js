@@ -137,6 +137,44 @@ const getAuth = (req, res) => {
     message:"User Authenticated"
   })
 };
+
+const getProfile= async (req,res)=>{
+  try{
+      const user=req.user;
+      const page=parseInt(req.query.page)||1;
+      const limit =parseInt(req.query.limit)||10;
+      const skip=(page-1)*limit;
+      const submissions=await Submission.find({userId:user._id})
+      .select("problemId status runtime memory createdAt")
+      .populate("problemId","title")
+      .sort({createdAt:-1})
+      .skip(skip)
+      .limit(limit)
+      .lean();
+      const total=await Submission.countDocuments({userId:user._id});
+      const result={
+        user:{
+          _id:user._id,
+          firstName:user.firstName,
+          lastName:user.lastName,
+          emailId:user.emailId,
+          age:user.age,
+          role:user.role,
+          totalProblemSolved:user.problemSolved.length,
+        },submissions,
+        pagination:{
+          total,
+          page,
+          limit,
+          totalPages:Math.ceil(total/limit)
+        },
+      }
+      res.status(200).json(result);
+  }catch(err){
+    res.status(500).send("Error: "+err.message)
+  }
+}
+
 module.exports = {
   register,
   login,
@@ -144,4 +182,5 @@ module.exports = {
   adminRegister,
   deleteProfile,
   getAuth,
+  getProfile
 };
