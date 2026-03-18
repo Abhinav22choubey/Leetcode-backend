@@ -4,8 +4,9 @@ const { eventNames } = require("../Models/user");
 const getLanguageById = (lang) => {
   const language = {
     "c++": 105,
-    java: 91,
-    javascript: 97,
+    "cpp":105,
+    "java": 91,
+    "javascript": 97,
   };
   return language[lang.toLowerCase()];
 };

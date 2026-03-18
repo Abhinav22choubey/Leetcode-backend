@@ -20,7 +20,7 @@ const createProblem = async (req, res) => {
     referenceSolution,
     problemCreator,
   } = req.body;
-
+  // console.log(req.body);
   try {
     for (const { language, completeCode } of referenceSolution) {
       // source_code
@@ -35,9 +35,9 @@ const createProblem = async (req, res) => {
         stdin: testcase.input,
         expected_output: testcase.output,
       }));
-
+      // console.log("submiison\n"+submissions)
       const submitResult = await submitBatch(submissions);
-
+      // console.log(submitResult);
       const resultToken = submitResult.map((value) => value.token);
       const testResult = await submitToken(resultToken);
       // console.log(testResult);
@@ -133,6 +133,7 @@ const getProblemById = async (req, res) => {
     const searchedProblem = await Problem.findById(id).select(
       " title description difficultyLevel tags visibleTestCases startCode referenceSolution ",
     );
+    console.log(searchedProblem);
     if (!searchedProblem) return res.status(404).send("Problem Not found ");
     res.status(200).send(searchedProblem);
   } catch (err) {
@@ -146,7 +147,7 @@ const getAllProblem = async (req, res) => {
       "_id title difficultyLevel tags",
     );
     if (allProblem.length == 0) return res.status(404).send("No Problem found");
-    console.log(allProblem);
+    // console.log(allProblem);
     res.status(200).json(allProblem);
   } catch (err) {
     res.status(500).send("Error" + err.message);
