@@ -7,6 +7,7 @@ const authRouter = require("./Routes/userAuth");
 const { redisC } = require("./config/redis");
 const problemRouter = require("./Routes/problemCreator");
 const submitRouter = require("./Routes/submit");
+const chatRouter=require("./Routes/chatRouter")
 const cors = require("cors");
 
 corsOptions = {
@@ -20,6 +21,7 @@ app.use(cookieParser());
 app.use("/user", authRouter);
 app.use("/problem", problemRouter);
 app.use("/submission", submitRouter);
+app.use("/chat",chatRouter);
 const run = async () => {
   try {
     await Promise.all([main(), redisC()]);
