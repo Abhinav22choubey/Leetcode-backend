@@ -4,7 +4,7 @@ const videoRouter=express.Router();
 const {generateUploadSignature,saveVideoMetadata,deleteVideo}=require("../controllers/videoUploader.js");
 
 videoRouter.get("/create/:problemId",adminMiddleware,generateUploadSignature);
-videoRouter.get("/save",adminMiddleware,saveVideoMetadata);
+videoRouter.post("/save",adminMiddleware,saveVideoMetadata);
 videoRouter.get("/delete/:problemId",adminMiddleware,deleteVideo);
 
 module.exports=videoRouter;

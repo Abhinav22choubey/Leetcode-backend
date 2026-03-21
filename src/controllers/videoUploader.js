@@ -55,13 +55,14 @@ const saveVideoMetadata=async (req,res)=>{
       secureUrl,
       duration,
     }=req.body;
-    const userId=req.result._id;
+    const userId=req.user._id;
 
     // Verify the upload with cloudinary
     const cloudinaryResource=await cloudinary.api.resource(
       cloudinaryPublicId,
       {resource_type:'video'}
     );
+    console.log(cloudinaryResource)
     if(!cloudinaryResource){
       return res.status(400).json({error:"Video not found on cloudinary"})
     }
@@ -94,7 +95,7 @@ const saveVideoMetadata=async (req,res)=>{
       }
     })
   }catch(err){
-    console.error("Error saving video metadata: ", error);
+    console.error("Error saving video metadata: ", err);
     res.status(500).json({error:"Failed to save video metadata"});
   }
 }
