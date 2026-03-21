@@ -11,7 +11,7 @@ const submitCode = async (req, res) => {
     const userId = req.user._id;
     const problemId = req.params.id;
     const { code, language } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
     // console.log(userId, problemId, code, language);
     if (!userId || !problemId || !code || !language)
       return res.status(400).send("Some Fields are missing");
@@ -75,7 +75,7 @@ const submitCode = async (req, res) => {
     submittedResult.testCasePassed = testCasePassed;
 
     await submittedResult.save();
-    console.log(submittedResult);
+    // console.log(submittedResult);
 
     // Problem id ko add karenge user schema me
     if (status == "Accepted" && !req.user.problemSolved.includes(problemId)) {
@@ -85,7 +85,7 @@ const submitCode = async (req, res) => {
 
     res.status(201).send(submittedResult);
   } catch (err) {
-    console.log(err.message)
+    // console.log(err.message)
     res.status(500).send("Internal Sever Error" + err.message);
   }
 };

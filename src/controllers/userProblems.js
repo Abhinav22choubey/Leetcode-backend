@@ -58,7 +58,7 @@ const createProblem = async (req, res) => {
   }
 };
 const updateProblem = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const {
     title,
     description,
@@ -93,9 +93,9 @@ const updateProblem = async (req, res) => {
       const submitResult = await submitBatch(submissions);
 
       const resultToken = submitResult.map((value) => value.token);
-      console.log(resultToken);
+      // console.log(resultToken);
       const testResult = await submitToken(resultToken);
-      console.log(testResult);
+      // console.log(testResult);
       for (const test of testResult) {
         if (test.status_id != 3) {
           return res.status(400).send("Error Occured");
@@ -110,7 +110,7 @@ const updateProblem = async (req, res) => {
 
     res.status(201).send(newProblem);
   } catch (err) {
-    console.log(err.response?.data || err.message);
+    // console.log(err.response?.data || err.message);
     res.status(500).send("Error" + err.message);
   }
 };
@@ -133,7 +133,7 @@ const getProblemById = async (req, res) => {
     const searchedProblem = await Problem.findById(id).select(
       " title description difficultyLevel tags visibleTestCases startCode referenceSolution ",
     );
-    console.log(searchedProblem);
+    // console.log(searchedProblem);
     if (!searchedProblem) return res.status(404).send("Problem Not found ");
     res.status(200).send(searchedProblem);
   } catch (err) {
@@ -161,7 +161,7 @@ const solvedAllProblemByUser=async(req,res)=>{
       path:"problemSolved",
       select:"_id title difficulty tags"
     });
-    console.log(user);
+    // console.log(user);
     res.status(200).send(user.problemSolved);
   }catch(err){
     res.status(500).send("Error"+err.message);
@@ -172,7 +172,7 @@ const submittedProblem=async(req,res)=>{
       const problemId=req.params.pid;
       const userId=req.user._id;
       const allSubmission = await Submission.find({userId,problemId});
-      console.log(allSubmission);
+      // console.log(allSubmission);
       res.status(200).send(allSubmission);
   }catch(err){res.status(500).send("Error "+err.message)};
 }
