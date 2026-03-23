@@ -11,8 +11,11 @@ const chatRouter=require("./Routes/chatRouter");
 const videoRouter=require("./Routes/videoRouter")
 const cors = require("cors");
 
-corsOptions = {
-  origin: "http://localhost:5173",
+const corsOptions = {
+  origin: [
+    "http://localhost:5173",
+    // "https://your-frontend.vercel.app"
+  ],
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -28,8 +31,9 @@ const run = async () => {
   try {
     await Promise.all([main(), redisC()]);
     console.log("All the server is connected");
-    app.listen(process.env.PORT, () => {
-      console.log("Server is running at Port : " + process.env.PORT);
+    const PORT=process.env.PORT||3000;
+    app.listen(PORT, () => {
+      console.log("Server is running at Port : " + PORT);
     });
   } catch (err) {
     console.log("Error: " + err.message);
