@@ -54,7 +54,7 @@ const createProblem = async (req, res) => {
     });
     res.status(201).send("Problem saved successfully");
   } catch (err) {
-    console.log(err.response?.data || err.message);
+    console.log(err);
   }
 };
 const updateProblem = async (req, res) => {

@@ -101,7 +101,7 @@ const getVideo = async (req, res) => {
   try {
     const problemId = req.params.problemId;
     const Video = await SolutionVideo.findOne({ problemId: problemId }).select("secureUrl thumbnailUrl duration");
-    if (!Video) res.status(404).send("Video Not found");
+    if (!Video) return res.status(404).send("Video Not found");
     console.log(Video);
     res.status(200).send(Video);
   } catch (err) {
