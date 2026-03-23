@@ -13,7 +13,7 @@ const cors = require("cors");
 
 const corsOptions = {
   origin: [
-    "https://leetcode-frontend-sage.vercel.app/"
+    "https://leetcode-frontend-sage.vercel.app"
   ],
   credentials: true,
 };
