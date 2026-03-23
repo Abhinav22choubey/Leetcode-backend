@@ -27,10 +27,15 @@ const register = async (req, res) => {
       userId: user._id,
       firstName: firstName,
       emailId: emailId,
-      role:user.role
+      role: user.role,
     };
     console.log(result);
-    res.cookie("token", token, { maxAge: 60 * 60 * 1000 });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 60 * 60 * 1000,
+    });
     res.status(201).json({
       data: result,
       message: "User registered Sucessfully",
@@ -63,10 +68,15 @@ const login = async (req, res) => {
       userId: user._id,
       firstName: user.firstName,
       emailId: emailId,
-      role:user.role
+      role: user.role,
     };
     // console.log(result);
-    res.cookie("token", token, { maxAge: 60 * 60 * 1000 });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 60 * 60 * 1000,
+    });
     res.status(200).json({
       data: result,
       message: "User Logged in Sucessfully",
@@ -85,7 +95,11 @@ const logout = async (req, res) => {
     await redisClient.expireAt(`token:${token}`, payload.exp);
     // clear the token
     console.log("userLogout succeessfully");
-    res.clearCookie("token");
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
     res.status(200).send("Logout Successfully");
   } catch (err) {
     res.status(401).send("Error : " + err);
@@ -107,7 +121,12 @@ const adminRegister = async (req, res) => {
       process.env.JWT_KEY,
       { expiresIn: "1h" },
     );
-    res.cookie("token", token, { maxAge: 60 * 60 * 1000 });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 60 * 60 * 1000,
+    });
     res.status(201).send("User Registered successfully");
   } catch (err) {
     res.status(400).send("Error : " + err);
@@ -125,55 +144,56 @@ const deleteProfile = async (req, res) => {
   }
 };
 const getAuth = (req, res) => {
-  const {_id,firstName,emailId,role}= req.user;
+  const { _id, firstName, emailId, role } = req.user;
   const result = {
     userId: _id,
     firstName: firstName,
     emailId: emailId,
-    role:role
+    role: role,
   };
   res.status(200).json({
-    data:result,
-    message:"User Authenticated"
-  })
+    data: result,
+    message: "User Authenticated",
+  });
 };
 
-const getProfile= async (req,res)=>{
-  try{
-      const user=req.user;
-      const page=parseInt(req.query.page)||1;
-      const limit =parseInt(req.query.limit)||10;
-      const skip=(page-1)*limit;
-      const submissions=await Submission.find({userId:user._id})
+const getProfile = async (req, res) => {
+  try {
+    const user = req.user;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const submissions = await Submission.find({ userId: user._id })
       .select("problemId status runtime memory createdAt")
-      .populate("problemId","title")
-      .sort({createdAt:-1})
+      .populate("problemId", "title")
+      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .lean();
-      const total=await Submission.countDocuments({userId:user._id});
-      const result={
-        user:{
-          _id:user._id,
-          firstName:user.firstName,
-          lastName:user.lastName,
-          emailId:user.emailId,
-          age:user.age,
-          role:user.role,
-          totalProblemSolved:user.problemSolved.length,
-        },submissions,
-        pagination:{
-          total,
-          page,
-          limit,
-          totalPages:Math.ceil(total/limit)
-        },
-      }
-      res.status(200).json(result);
-  }catch(err){
-    res.status(500).send("Error: "+err.message)
+    const total = await Submission.countDocuments({ userId: user._id });
+    const result = {
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        emailId: user.emailId,
+        age: user.age,
+        role: user.role,
+        totalProblemSolved: user.problemSolved.length,
+      },
+      submissions,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).send("Error: " + err.message);
   }
-}
+};
 
 module.exports = {
   register,
@@ -182,5 +202,5 @@ module.exports = {
   adminRegister,
   deleteProfile,
   getAuth,
-  getProfile
+  getProfile,
 };
