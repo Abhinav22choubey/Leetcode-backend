@@ -41,8 +41,10 @@ const submitCode = async (req, res) => {
     }));
 
     const submitResult = await submitBatch(submissions);
+    // console.log(submitResult);
     const resultToken = submitResult.map((value) => value.token);
     const testResult = await submitToken(resultToken);
+    // console.log(submitToken);
     let testCasePassed = 0;
     let runtime = 0;
     let memory = 0;
