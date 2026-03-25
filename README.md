@@ -163,7 +163,7 @@ https://github.com/Abhinav22choubey/Leetcode-backend
 Abhinav Kumar Choubey
 
 GitHub: https://github.com/Abhinav22choubey
-Linkedin: linkedin.com/in/abhinav22choubey
+Linkedin: https://linkedin.com/in/abhinav22choubey
 
 ---
 
