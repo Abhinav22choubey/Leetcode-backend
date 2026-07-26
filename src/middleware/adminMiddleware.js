@@ -9,8 +9,8 @@ const adminMiddleware = async (req, res,next)=>{
         if(!token) throw new Error ("Token is not present ");
 
         // Redis blocklist
-        const IsBlocked = await redisClient.exists(`token:${token}`);
-        if(IsBlocked) throw new Error ("Token invalid ");
+        // const IsBlocked = await redisClient.exists(`token:${token}`);
+        // if(IsBlocked) throw new Error ("Token invalid ");
 
         const payload=jwt.verify(token,process.env.JWT_KEY);
         const {_id}=payload;

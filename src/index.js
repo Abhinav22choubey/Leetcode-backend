@@ -14,6 +14,7 @@ const cors = require("cors");
 const corsOptions = {
   origin: [
     "https://leetcode-frontend-sage.vercel.app",
+    // "http://localhost:5173",
   ],
   credentials: true,
 };
@@ -28,7 +29,8 @@ app.use("/chat",chatRouter);
 app.use("/video",videoRouter);
 const run = async () => {
   try {
-    await Promise.all([main(), redisC()]);
+    // await Promise.all([main(), redisC()]);
+    await Promise.all([main()]);
     console.log("All the server is connected");
     const PORT=process.env.PORT||3000;
     app.listen(PORT, () => {

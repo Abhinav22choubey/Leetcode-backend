@@ -91,8 +91,8 @@ const logout = async (req, res) => {
     const { token } = req.cookies;
     const payload = jwt.decode(token);
     // set the value
-    await redisClient.set(`token:${token}`, "blocked");
-    await redisClient.expireAt(`token:${token}`, payload.exp);
+    // await redisClient.set(`token:${token}`, "blocked");
+    // await redisClient.expireAt(`token:${token}`, payload.exp);
     // clear the token
     console.log("userLogout succeessfully");
     res.clearCookie("token", {
